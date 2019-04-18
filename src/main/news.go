@@ -1,17 +1,16 @@
 package main
 
-import (
-	"database/sql"
-	"fmt"
-	"net/http"
-    "encoding/json"
-	_ "github.com/go-sql-driver/mysql"
-)
+import "database/sql"
+import "fmt"
+import "net/http"
+import "encoding/json"
+
+import _ "github.com/go-sql-driver/mysql"
 
 type fieldnews struct {
-	ID     int
-	Author string
-	Body   string
+	ID      int
+	Author  string
+	Body    string
 	Created string
 }
 
@@ -38,8 +37,8 @@ func connect() (*sql.DB, error) {
 func getNews(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	 var result []byte
-    var err error
+	var result []byte
+	var err error
 	db, err := connect()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -47,10 +46,7 @@ func getNews(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-   
-
 	if r.Method == "GET" {
-        
 
 		rows, err := db.Query("select id, author, body,created from news order by `created` DESC LIMIT 10 ")
 		if err != nil {
@@ -75,38 +71,37 @@ func getNews(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err = rows.Err(); err != nil {
-       	 	http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
-        }
+		}
 
-                result, err = json.Marshal(data)
+		result, err = json.Marshal(data)
 
-                if err != nil {
-                    http.Error(w, err.Error(), http.StatusInternalServerError)
-                    return
-                }
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-                w.Write(result)
-                return
+		w.Write(result)
+		return
 
-                
-    //end get
-	}else if r.Method == "POST"{
-        
-        var reqauthor = r.FormValue("author") 
-        var reqbody = r.FormValue("body") 
+		//end get
+	} else if r.Method == "POST" {
 
-        insert, err := db.Query("INSERT INTO news (author, body)  VALUES ( '"+ reqauthor +"', '"+ reqbody +"' )")
+		var reqauthor = r.FormValue("author")
+		var reqbody = r.FormValue("body")
 
-	    if err != nil {
-             http.Error(w, err.Error(), http.StatusInternalServerError)
-             return
-        }
-	  
-	     defer insert.Close()
-        //fmt.Println(reqauthor)
+		insert, err := db.Query("INSERT INTO news (author, body)  VALUES ( '" + reqauthor + "', '" + reqbody + "' )")
 
-	} 
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		defer insert.Close()
+		//fmt.Println(reqauthor)
+
+	}
 
 	http.Error(w, "", http.StatusBadRequest)
 }
