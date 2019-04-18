@@ -1,6 +1,12 @@
 Golang REST API menggunakan My SQL 
 support php 7
 
+#SETTING Database
+
+- database (mysql) ada di dalam folder database dump 
+- import databasenya 
+- setting nama databasenya di file news.go
+- fung connect()
 
 #SETTING GOPATH
 
