@@ -25,6 +25,6 @@ URL  : http://localhost:8080/news
 
 Form Inputan
 
-author : alkan
+author : alkan <br>
 body   : tes
 
